@@ -1,22 +1,57 @@
-import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create.user.dto';
+import {
+  Injectable,
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { User } from './entity/users.entity';
-import { uuid } from 'uuidv4';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
-  users: User[] = [];
+  create(dto: CreateUserDto): Promise<User> {
+    return this.prisma.user.create({ data: dto });
+  }
+  constructor(private readonly prisma: PrismaService) {}
 
-  getAll(): User[] {
-    return this.users;
+  findAll(): Promise<User[]> {
+    return this.prisma.user.findMany();
   }
 
-  create(createUserDto: CreateUserDto): User {
-    const newUser: User = {
-      id: uuid(),
-      ...createUserDto,
-    };
-    this.users.push(newUser);
-    return newUser;
+  findOne(id: string) {
+    return this.prisma.user.findUnique({ where: { id } });
+  }
+
+  upate(id: string, dto: UpdateUserDto): Promise<User | void> {
+    return this.prisma.user.update({ where: { id }, data: dto });
+  }
+
+  remove(id: string) {
+    return this.prisma.user.delete({
+      where: { id },
+      select: { name: true, email: true },
+    });
+  }
+
+  async verifyIdAndReturnUser(id: string): Promise<User> {
+    const user: User = await this.prisma.user.findUnique({ where: { id } });
+
+    if (!user) {
+      throw new NotFoundException(
+        `A entrada de Id '${id}' não foi localizada.`,
+      );
+    }
+    return user;
+  }
+
+  handleErrorCnstraintUnique(error: Error): never {
+    const splitedMessage = error.message.split('`');
+
+    const errorMessage = `O Id '${
+      splitedMessage[splitedMessage.length - 2]
+    }' não está respeitando a constraint UNIQUE`;
+
+    throw new UnprocessableEntityException(errorMessage);
   }
 }
