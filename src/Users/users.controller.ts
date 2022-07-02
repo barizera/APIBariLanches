@@ -18,6 +18,14 @@ import { UpdateUserDto } from './dto/update-user.dto';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @Post()
+  @ApiOperation({
+    summary: 'Criação de User',
+  })
+  create(@Body() dto: CreateUserDto): Promise<User> {
+    return this.usersService.create(dto);
+  }
+
   @Get()
   @ApiOperation({
     summary: 'Lista de todos os Users',
@@ -32,14 +40,6 @@ export class UsersController {
   })
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(id);
-  }
-
-  @Post()
-  @ApiOperation({
-    summary: 'Criação de User',
-  })
-  create(@Body() dto: CreateUserDto): Promise<User> {
-    return this.usersService.create(dto);
   }
 
   @Patch(':id')
