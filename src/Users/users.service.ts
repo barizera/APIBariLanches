@@ -19,7 +19,9 @@ export class UsersService {
       email: dto.email,
       password: hashedPass,
     };
-    return this.prisma.user.create({ data });
+    return this.prisma.user
+      .create({ data })
+      .catch(this.handleErrorConstraintUnique);
   }
   constructor(private readonly prisma: PrismaService) {}
 
@@ -28,20 +30,26 @@ export class UsersService {
   }
 
   findOne(id: string) {
-    return this.prisma.user.findUnique({ where: { id } });
+    return this.verifyIdAndReturnUser(id);
   }
 
-  upate(id: string, dto: UpdateUserDto): Promise<User | void> {
-    return this.prisma.user.update({ where: { id }, data: dto });
+  async upate(id: string, dto: UpdateUserDto): Promise<User | void> {
+    await this.verifyIdAndReturnUser(id);
+
+    return this.prisma.user
+      .update({ where: { id }, data: dto })
+      .catch(this.handleErrorConstraintUnique);
   }
 
-  remove(id: string) {
+  async remove(id: string) {
+    await this.verifyIdAndReturnUser(id);
     return this.prisma.user.delete({
       where: { id },
       select: { name: true, email: true },
     });
   }
 
+  //Validations Functions
   async verifyIdAndReturnUser(id: string): Promise<User> {
     const user: User = await this.prisma.user.findUnique({ where: { id } });
 
@@ -53,7 +61,7 @@ export class UsersService {
     return user;
   }
 
-  handleErrorCnstraintUnique(error: Error): never {
+  handleErrorConstraintUnique(error: Error): never {
     const splitedMessage = error.message.split('`');
 
     const errorMessage = `O Id '${
