@@ -11,6 +11,8 @@ import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UsersService {
+  constructor(private readonly prisma: PrismaService) {}
+
   async create(dto: CreateUserDto): Promise<User> {
     const hashedPass = await bcrypt.hash(dto.password, 8);
 
@@ -23,7 +25,6 @@ export class UsersService {
       .create({ data })
       .catch(this.handleErrorConstraintUnique);
   }
-  constructor(private readonly prisma: PrismaService) {}
 
   findAll(): Promise<User[]> {
     return this.prisma.user.findMany();
