@@ -1,34 +1,60 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { Category } from './entities/category.entity';
 
+@ApiTags('category')
 @Controller('categories')
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Post()
-  create(@Body() createCategoryDto: CreateCategoryDto) {
-    return this.categoriesService.create(createCategoryDto);
+  @ApiOperation({
+    summary: 'Criar uma category.',
+  })
+  create(@Body() dto: CreateCategoryDto): Promise<Category> {
+    return this.categoriesService.create(dto);
   }
 
   @Get()
-  findAll() {
+  @ApiOperation({
+    summary: 'Listar todas as categorys.',
+  })
+  findAll(): Promise<Category[]> {
     return this.categoriesService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.categoriesService.findOne(+id);
+  @ApiOperation({
+    summary: 'Listar uma category específica.',
+  })
+  findOne(@Param('id') id: string): Promise<Category> {
+    return this.categoriesService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCategoryDto: UpdateCategoryDto) {
-    return this.categoriesService.update(+id, updateCategoryDto);
+  @ApiOperation({
+    summary: 'Atualizar uma category.',
+  })
+  update(
+    @Param('id') id: string,
+    @Body() dto: UpdateCategoryDto,
+  ): Promise<Category | void> {
+    return this.categoriesService.update(id, dto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.categoriesService.remove(+id);
+    return this.categoriesService.remove(id);
   }
 }
