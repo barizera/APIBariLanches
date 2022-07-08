@@ -11,8 +11,9 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 @Injectable()
 export class CategoriesService {
   constructor(private readonly prisma: PrismaService) {}
-  async create(dto: CreateCategoryDto) {
-    return await this.prisma.category
+
+  async create(dto: CreateCategoryDto): Promise<Category> {
+    return this.prisma.category
       .create({ data: dto })
       .catch(this.handleErrorConstraintUnique);
   }

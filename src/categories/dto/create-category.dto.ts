@@ -8,5 +8,5 @@ export class CreateCategoryDto {
     description: 'Categoria do lanche',
     example: 'Salgados',
   })
-  type: string;
+  name: string;
 }
