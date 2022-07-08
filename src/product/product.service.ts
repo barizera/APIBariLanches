@@ -7,6 +7,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Product } from './entities/product.entity';
+import { handleErrorConstraintUnique } from 'src/utils/handle-error-unique.util';
 
 @Injectable()
 export class ProductService {
@@ -15,7 +16,7 @@ export class ProductService {
   async create(dto: CreateProductDto): Promise<Product | void> {
     return await this.prisma.product
       .create({ data: dto })
-      .catch(this.handleErrorConstraintUnique);
+      .catch(handleErrorConstraintUnique);
   }
 
   findAll(): Promise<Product[]> {
@@ -29,7 +30,7 @@ export class ProductService {
   async update(id: string, dto: UpdateProductDto) {
     return await this.prisma.product
       .update({ where: { id }, data: dto })
-      .catch(this.handleErrorConstraintUnique);
+      .catch(handleErrorConstraintUnique);
   }
 
   async remove(id: string) {
@@ -49,15 +50,5 @@ export class ProductService {
       );
     }
     return product;
-  }
-
-  handleErrorConstraintUnique(error: Error): never {
-    const splitedMessage = error.message.split('`');
-
-    const errorMessage = `O Id '${
-      splitedMessage[splitedMessage.length - 2]
-    }' não está respeitando a constraint UNIQUE`;
-
-    throw new UnprocessableEntityException(errorMessage);
   }
 }

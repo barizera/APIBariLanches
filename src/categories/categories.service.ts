@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { Category } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { handleErrorConstraintUnique } from 'src/utils/handle-error-unique.util';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 
@@ -15,7 +16,7 @@ export class CategoriesService {
   async create(dto: CreateCategoryDto): Promise<Category> {
     return this.prisma.category
       .create({ data: dto })
-      .catch(this.handleErrorConstraintUnique);
+      .catch(handleErrorConstraintUnique);
   }
 
   findAll(): Promise<Category[]> {
@@ -30,7 +31,7 @@ export class CategoriesService {
     await this.verifyIdAndReturnCategory(id);
     return this.prisma.category
       .update({ where: { id }, data: dto })
-      .catch(this.handleErrorConstraintUnique);
+      .catch(handleErrorConstraintUnique);
   }
 
   async remove(id: string) {
@@ -49,15 +50,5 @@ export class CategoriesService {
       );
     }
     return category;
-  }
-
-  handleErrorConstraintUnique(error: Error): never {
-    const splitedMessage = error.message.split('`');
-
-    const errorMessage = `O Id '${
-      splitedMessage[splitedMessage.length - 2]
-    }' não está respeitando a constraint UNIQUE`;
-
-    throw new UnprocessableEntityException(errorMessage);
   }
 }
