@@ -8,6 +8,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcryptjs';
+import { handleErrorConstraintUnique } from 'src/utils/handle-error-unique.util';
 
 @Injectable()
 export class UsersService {
@@ -21,9 +22,7 @@ export class UsersService {
       email: dto.email,
       password: hashedPass,
     };
-    return this.prisma.user
-      .create({ data })
-      .catch(this.handleErrorConstraintUnique);
+    return this.prisma.user.create({ data }).catch(handleErrorConstraintUnique);
   }
 
   findAll(): Promise<User[]> {
@@ -39,7 +38,7 @@ export class UsersService {
 
     return this.prisma.user
       .update({ where: { id }, data: dto })
-      .catch(this.handleErrorConstraintUnique);
+      .catch(handleErrorConstraintUnique);
   }
 
   async remove(id: string) {
@@ -60,15 +59,5 @@ export class UsersService {
       );
     }
     return user;
-  }
-
-  handleErrorConstraintUnique(error: Error): never {
-    const splitedMessage = error.message.split('`');
-
-    const errorMessage = `O Id '${
-      splitedMessage[splitedMessage.length - 2]
-    }' não está respeitando a constraint UNIQUE`;
-
-    throw new UnprocessableEntityException(errorMessage);
   }
 }
