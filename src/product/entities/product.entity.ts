@@ -6,4 +6,5 @@ export class Product {
   image: string;
   created_at?: Date;
   updated_at?: Date;
+  categoryId: string;
 }

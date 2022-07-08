@@ -30,5 +30,28 @@ model Product {
   createAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
+  category Category @relation(fields: [categoryId], references: [id])
+  categoryId String @map("category_id")
   @@map("products")
+}
+
+model Table {
+  id String @id @default(uuid())
+  number Int @unique
+  createAt DateTime @default(now()) @map("create_at")
+  updatedAt DateTime @updatedAt @map("update_at")
+
+  @@map("table")
+
+}
+
+model Category {
+  id String @id @default(uuid())
+  name String @unique
+  createAt DateTime @default(now()) @map("create_at")
+  updatedAt DateTime @updatedAt @map("update_at")
+
+  products Product[]
+
+  @@map("category")
 }
