@@ -44,6 +44,7 @@ export class ProductController {
     return this.productService.findOne(id);
   }
 
+
   @Patch(':id')
   @ApiOperation({
     summary: 'Atualizar um Produto.',
