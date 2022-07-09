@@ -22,7 +22,7 @@ export class UsersController {
   @ApiOperation({
     summary: 'Criação de User',
   })
-  create(@Body() dto: CreateUserDto): Promise<User> {
+  create(@Body() dto: CreateUserDto): Promise<User | void> {
     return this.usersService.create(dto);
   }
 
