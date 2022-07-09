@@ -35,7 +35,6 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-
   @Get(':id')
   @ApiOperation({
     summary: 'Lista de usuário por ID.',
