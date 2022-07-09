@@ -7,6 +7,7 @@ import { handleErrorConstraintUnique } from 'src/utils/handle-error-unique.util'
 import { FavoriteProductDto } from '../favorites/dto/favorite.dto';
 import { Favorite } from 'src/favorites/entity/favorite.entity';
 import { User } from 'src/Users/entity/users.entity';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class ProductService {
@@ -70,8 +71,20 @@ export class ProductService {
         `Entrada de id '${dto.userId}' não encontrada`,
       );
     }
+    const data: Prisma.FavoriteCreateInput = {
+      user: {
+        connect: {
+          id: dto.userId,
+        },
+      },
+      product: {
+        connect: {
+          name: dto.productName,
+        },
+      },
+    };
 
-    return this.prisma.favorite.create({ data: dto });
+    return this.prisma.favorite.create({ data });
   }
 
   async unfav(id: string) {
