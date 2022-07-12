@@ -1,6 +1,7 @@
 # API Bari Lanches.
 
 Essa api, foi desenvolvida com fins de estudos, utilizando o Nest.js.
+O banco de dados utilizado é o postgres utilizando o prisma para fazer toda a linkagem.
 
 ## Como clonar a aplicação?
 
