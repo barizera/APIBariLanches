@@ -12,6 +12,14 @@ async function bootstrap() {
     .setTitle('Bari Lanches')
     .setDescription('API responsavel pela gestão da Bari Lanches')
     .setVersion('1.0.0')
+    .addTag('status')
+    .addTag('auth')
+    .addTag('users')
+    .addTag('category')
+    .addTag('products')
+    .addTag('tables')
+    .addTag('orders')
+    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);

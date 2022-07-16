@@ -15,7 +15,7 @@ import { Product } from './entities/product.entity';
 import { FavoriteProductDto } from '../favorites/dto/favorite.dto';
 import { Favorite } from 'src/favorites/entity/favorite.entity';
 
-@ApiTags('Products')
+@ApiTags('products')
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
