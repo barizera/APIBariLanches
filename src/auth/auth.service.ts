@@ -3,10 +3,14 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { LoginResponseDto } from './dto/login-response.dto';
 import { LoginDto } from './dto/login.dto';
 import * as bcrypt from 'bcryptjs';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly jwtService: JwtService,
+  ) {}
 
   async login(loginDto: LoginDto): Promise<LoginResponseDto> {
     const { email, password } = loginDto;
@@ -22,9 +26,11 @@ export class AuthService {
     }
     delete user.password;
 
+    const token: string = this.jwtService.sign({ email });
+
     return {
-      token: 'Teste',
-      user: undefined,
+      token,
+      user,
     };
   }
 }
