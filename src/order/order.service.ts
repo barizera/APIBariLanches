@@ -7,17 +7,17 @@ import { CreateOrderDto } from './dto/create-order.dto';
 export class OrderService {
   constructor(private readonly prisma: PrismaService) {}
 
-  create(dto: CreateOrderDto) {
+  create(userId: string, dto: CreateOrderDto) {
     console.log(dto);
     const data: Prisma.OrderCreateInput = {
+      user: {
+        connect: {
+          id: userId,
+        },
+      },
       table: {
         connect: {
           number: dto.tableNumber,
-        },
-      },
-      user: {
-        connect: {
-          id: dto.userId,
         },
       },
       products: {

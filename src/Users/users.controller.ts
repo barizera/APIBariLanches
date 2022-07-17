@@ -6,13 +6,15 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { User } from './entity/users.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Favorite } from 'src/favorites/entity/favorite.entity';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('users')
 @Controller('users')
@@ -31,6 +33,8 @@ export class UsersController {
   @ApiOperation({
     summary: 'Lista de todos os Users',
   })
+  @UseGuards(AuthGuard())
+  @ApiBearerAuth()
   findAll(): Promise<User[]> {
     return this.usersService.findAll();
   }
@@ -39,6 +43,8 @@ export class UsersController {
   @ApiOperation({
     summary: 'Lista de usuário por ID.',
   })
+  @UseGuards(AuthGuard())
+  @ApiBearerAuth()
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(id);
   }
@@ -47,6 +53,8 @@ export class UsersController {
   @ApiOperation({
     summary: 'Listar os favoritos de um usuário.',
   })
+  @UseGuards(AuthGuard())
+  @ApiBearerAuth()
   findUserFavoritesProducts(@Param('id') id: string): Promise<Favorite[]> {
     return this.usersService.findUserFavoritesProducts(id);
   }
@@ -55,6 +63,8 @@ export class UsersController {
   @ApiOperation({
     summary: 'Atualização do User.',
   })
+  @UseGuards(AuthGuard())
+  @ApiBearerAuth()
   update(
     @Param('id') id: string,
     @Body() dto: UpdateUserDto,
@@ -66,6 +76,8 @@ export class UsersController {
   @ApiOperation({
     summary: 'Deletar um usuário',
   })
+  @UseGuards(AuthGuard())
+  @ApiBearerAuth()
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);
   }

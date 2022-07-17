@@ -12,13 +12,6 @@ export class CreateOrderDto {
   })
   tableNumber: number;
 
-  @IsUUID()
-  @ApiProperty({
-    description: 'Id do usuário que realizou o pedido.',
-    example: '3e237437-81fe-4e2d-bee5-ec96b0d763dd',
-  })
-  userId: string;
-
   @ValidateNested({ each: true })
   @Type(() => CreateOrderToProductDto)
   @ApiProperty({

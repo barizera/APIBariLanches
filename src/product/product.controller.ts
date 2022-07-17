@@ -6,16 +6,20 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Product } from './entities/product.entity';
 import { FavoriteProductDto } from '../favorites/dto/favorite.dto';
 import { Favorite } from 'src/favorites/entity/favorite.entity';
+import { AuthGuard } from '@nestjs/passport';
 
-@ApiTags('Products')
+@ApiTags('products')
+@UseGuards(AuthGuard())
+@ApiBearerAuth()
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
